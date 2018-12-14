@@ -1,0 +1,22 @@
+{
+  "name": "sqlite3-tab",
+  "version": "1.0.0",
+  "description": "interface de alto nivel para consultas posgresql",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha ./test/index.js",
+    "lint": "eslint ./sqlite3-tab.js ./lib"
+  },
+  "keywords": [
+    "sql",
+    "pg",
+    "posgresql"
+  ],
+  "author": "enyerverfranco@gmail.com",
+  "license": "MIT",
+  "devDependencies": {},
+  "dependencies": {
+    "dbtabla": "^0.2.0",
+    "sqlite3": "^4.0.4"
+  }
+}
