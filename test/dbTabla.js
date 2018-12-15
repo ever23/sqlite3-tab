@@ -15,8 +15,6 @@ function createAndInsert(callback)
             {
                 sqlite.query("INSERT INTO `test1` (`id`,`row1`,`row2`,`row3`) VALUES (1,'text',12,'text2');")
                         .then(ok=>callback(resolve,reject,sqlite)).catch(reject)
-
-                     
             }).catch(reject)
            
     }))
@@ -33,7 +31,8 @@ describe("Test de la clase sqlite3-tab :tabla",()=>
     it('obtencion del objeto dbtabla async',()=>
     {
         
-        return (new Promise((resolve,rejec)=>
+        
+        return (new Promise( (resolve,rejec)=>
         {
             const sqlite= new connect(":memory:")
             sqlite.query("create table `test1`(`id` int not null,`row1` text default 'ever',`row2` int not null,`row3` text null,primary key (`id`))")

@@ -21,8 +21,16 @@ class sqlite3Tab extends connect
             this.conection.connect()*/
         this.__escapeChar="`"
         this.__information_schema = "select sqlite_master.* from sqlite_master where  name="
-        
+
         sqlite3Tab.__caheTablas={}
+    }
+    serialize(call)
+    {
+        return this.conection.serialize(call)
+    }
+    parallelize(call)
+    {
+        return this.conectionparallelize(call)
     }
     /**
     * construlle un objeto dbtabla asociado a el nombre
@@ -49,7 +57,7 @@ class sqlite3Tab extends connect
     }
     /**
     * conecta con la base de datos
-    * 
+    *
     */
     connect()
     {
@@ -64,10 +72,10 @@ class sqlite3Tab extends connect
     {
         return new Promise((resolver,reject)=>
         {
-        
+
             if(/^[\s]*select/i.test(query))
             {
-                
+
                 this.conection.all(query,(error,result)=>
                 {
                     if(error)
@@ -86,7 +94,7 @@ class sqlite3Tab extends connect
                     resolver(result)
                 })
             }
-            
+
         })
     }
     /**
@@ -121,32 +129,22 @@ class sqlite3Tab extends connect
     */
     __keysInTable(table,callback)
     {
-        //console.log(this.conection.database);
-        this.query(`${this.__information_schema}'${table}'`)
-            .then(result=>{
-                
-                if(!this.inModel(table,callback,result.length==0))
-                {
-                    if(result.length==0)
-                        throw "la tabla no existe"
-                    this.__procesingKeys(table,result[0].sql,callback)
-                }
-               
-            }).catch(e=>{throw e})
+        return new Promise((res,rej)=>
+        {
+            this.query(`${this.__information_schema}'${table}'`)
+                .then(result=>{
+                    if(!this.inModel(table,res,result.length==0))
+                    {
+                        if(result.length==0)
+                            rej("la tabla no existe")
+                        else
+                            res((new model(result[0].sql,this.__escapeChar)).getData())
+                    }
+                }).catch(rej)
+        })
+
     }
-    /**
-    * procesa los metadatos y los pasa a la funcion
-    * @param {string} table - nombre de la tabla
-    * @param {array} data - metadatos crudos
-    * @param {function} callback - funcion a ejecutar cuando se obtengan los metadatos
-    *
-    */
-    __procesingKeys(table,sql,callback)
-    {
-        let m= new model(sql,this.__escapeChar)
-        //console.log(m.keys())
-        callback(m.getData())
-    }
+
 }
 
 module.exports=sqlite3Tab

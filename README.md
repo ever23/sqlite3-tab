@@ -54,7 +54,7 @@ y crear los modelos nesesarios para el proyecto
 ```js
 // file ./model/test1.js 
 const model=require("sql-model")
-const test1=new model("test3",[
+const test2=new model("test2",[
     {
         name:"id",
         type:"int",
@@ -74,7 +74,7 @@ const test1=new model("test3",[
         type:"date",
     }
 ])
-test1.foreingKey({ // se agrega las claves foraneas 
+test2.foreingKey({ // se agrega las claves foraneas 
     key:"row2",
     reference:"test4",
     keyReference:"id_key2",
@@ -83,7 +83,10 @@ test1.foreingKey({ // se agrega las claves foraneas
     // match: ' '
 })
 test2.insert(1,"hola",14,"2018/10/23")// datos de inicializacion 
-test2.method("miMetodo",(tabla,...params)=>// el parametro tabla recibira el objeto de la tabla 
+// el parametro tabla recibira el objeto de la tabla 
+// y el segundo el objeto de coneccion
+// y el resto los parametros pasados en la llamada
+test2.method("miMetodo",(tabla,connect,...params)=>
 {
     //tu codigo para el metodo del modelo 
     //tabla.select()
@@ -91,7 +94,7 @@ test2.method("miMetodo",(tabla,...params)=>// el parametro tabla recibira el obj
     //tabla.update()
     //tabla.delete()
 })
-module.exports=test1
+module.exports=test2
 ```
 Luego en para usarlo 
 ```js
@@ -103,9 +106,9 @@ let connect= new sqlite(":memory:")
 
 connect.pathModels(path.dirname(__filename)+"/model")
 
-let test1=connect.tabla("test1")
+let test2=connect.tabla("test2")
 // insert([1,"un texto","otro texto"]) tabien se acepta un objeto  
-test1.insert(1,"un texto","otro texto") 
+test2.insert(1,"un texto","otro texto") 
     .then(ok=>
     {
         console.log(ok)
@@ -113,7 +116,7 @@ test1.insert(1,"un texto","otro texto")
     {
         console.log(e)
     })
-test1.miMetodo("hola")
+test2.miMetodo("hola")
 ```
 
 
