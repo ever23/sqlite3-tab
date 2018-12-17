@@ -42,7 +42,7 @@ class sqlite3Tab extends connect
     * @param {function} callback - funcion anomina que se ejecutara cuando se verifique la existencia de la tabla
     * @return {dbTabla}
     */
-    tabla(tabla,callback,create=false)
+    tabla(tabla,callback,verify=false)
     {
         if(typeof callback ==="boolean")
             create=callback
@@ -55,7 +55,7 @@ class sqlite3Tab extends connect
             connection:this,
             callback:t=>typeof callback==="function"?callback(t):null,
             config:this.helpersConf()
-        },typeof callback==="function" && create)
+        },typeof callback==="function" && verify)
 
     }
     /**
@@ -144,7 +144,7 @@ class sqlite3Tab extends connect
         })
     }
 
-   
+
     /**
     * termina la coneccion
     */
