@@ -16,7 +16,7 @@ function createAndInsert(callback)
                 sqlite.query("INSERT INTO `test1` (`id`,`row1`,`row2`,`row3`) VALUES (1,'text',12,'text2');")
                         .then(ok=>callback(resolve,reject,sqlite)).catch(reject)
             }).catch(reject)
-           
+
     }))
 }
 describe("Test de la clase sqlite3-tab :tabla",()=>
@@ -30,8 +30,8 @@ describe("Test de la clase sqlite3-tab :tabla",()=>
     })
     it('obtencion del objeto dbtabla async',()=>
     {
-        
-        
+
+
         return (new Promise( (resolve,rejec)=>
         {
             const sqlite= new connect(":memory:")
@@ -48,14 +48,14 @@ describe("Test de la clase sqlite3-tab :tabla",()=>
     it('dbTabla:insert',()=>
     {
         const sqlite= new connect(":memory:")
-        sqlite.conection.run("create table `test1`(`id` int not null,`row1` text default 'ever',`row2` int not null,`row3` text null,primary key (`id`))")
+        sqlite.connection.run("create table `test1`(`id` int not null,`row1` text default 'ever',`row2` int not null,`row3` text null,primary key (`id`))")
         let test1=sqlite.tabla('test1')
         return test1.insert(1,"text",12,"text2").then(ok=>
         {
             assert.ok(ok instanceof sqlite3Ok,"debe retornar un objeto sqlite3Ok")
             assert.equal(ok.$sql,"INSERT INTO `test1` (`id`,`row1`,`row2`,`row3`) VALUES (1,'text',12,'text2');")
         })
-       
+
     })
     it('dbTabla:select',()=>
     {
@@ -73,7 +73,7 @@ describe("Test de la clase sqlite3-tab :tabla",()=>
                 assert.equal(data[0].row1,"text")
                 assert.equal(data[0].row2,12)
                 assert.equal(data[0].row3,"text2")
-            })  
+            })
     })
     it('dbTabla:update',()=>
     {
@@ -85,8 +85,8 @@ describe("Test de la clase sqlite3-tab :tabla",()=>
             {
                 assert.ok(data instanceof sqlite3Ok,"debe retornar un objeto sqlite3Result")
                 assert.equal(data.$sql,"UPDATE `test1` SET `row2`='hola' WHERE `id`=1;")
-                
-            })  
+
+            })
     })
     it('dbTabla:delete',()=>
     {
@@ -98,11 +98,11 @@ describe("Test de la clase sqlite3-tab :tabla",()=>
             {
                 assert.ok(data instanceof sqlite3Ok,"debe retornar un objeto sqlite3Result")
                 assert.equal(data.$sql,"DELETE FROM `test1` WHERE `id`=1;")
-            })  
+            })
     })
     it('load model test3',()=>
     {
-        return (new Promise((resolve,rejec)=>
+        return (new Promise((resolve,reject)=>
         {
             const sqlite= new connect(":memory:")
             sqlite.pathModels(path.dirname(__filename)+"/modelo")
@@ -112,19 +112,19 @@ describe("Test de la clase sqlite3-tab :tabla",()=>
             {
                 reject(e)
             }
-           
+
         })).then(test3=>
         {
             return test3.select().then(d=>
             {
                  assert.ok(test3 instanceof dbtabla,"debe retornar un objeto dbtabla")
             })
-            
-        }) 
+
+        })
     })
     it('load model test4',()=>
     {
-        return (new Promise((resolve,rejec)=>
+        return (new Promise((resolve,reject)=>
         {
             const sqlite= new connect(":memory:")
             sqlite.pathModels(path.dirname(__filename)+"/modelo")
@@ -134,14 +134,14 @@ describe("Test de la clase sqlite3-tab :tabla",()=>
             {
                 reject(e)
             }
-           
+
         })).then(test4=>
         {
             return test4.select().then(d=>
             {
                  assert.ok(test4 instanceof dbtabla,"debe retornar un objeto dbtabla")
             })
-            
-        }) 
+
+        })
     })
 })

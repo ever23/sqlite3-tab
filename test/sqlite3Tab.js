@@ -9,12 +9,11 @@ describe("Test de la clase sqlite3-tab",()=>
         assert.equal(typeof sqlite.tabla,"function")
         assert.equal(typeof sqlite.query,"function")
         assert.equal(typeof sqlite.connect,"function")
-        assert.equal(typeof sqlite.__escapeString,"function")
         assert.equal(typeof sqlite.__keysInTable,"function")
         assert.equal(typeof sqlite.end,"function")
         sqlite.end()
     })
-   
+
     it('metodo query',()=>
     {
         const sqlite= new connect(":memory:")
@@ -24,8 +23,8 @@ describe("Test de la clase sqlite3-tab",()=>
                 assert.equal(ok,undefined)
                 sqlite.end()
             })
-     
+
     })
 
-    
+
 })

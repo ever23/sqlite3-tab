@@ -10,27 +10,30 @@ const model=require("sql-model")
 class sqlite3Tab extends connect
 {
     /**
-    * @param {object} param - configuracion para mysql
+    * @param {object} param - configuracion para sqlite3 o objeto Database de sqlite3
     *
     */
     constructor(params)
     {
-        super(params,SQLITE3_DB)
-        this.conection=new sqlite3.Database(params)
-        /*if(connect)
-            this.conection.connect()*/
+        if(params instanceof sqlite3.Database)
+        {
+            super({},SQLITE3_DB)
+            this.connection=params
+        }else {
+            super(params,SQLITE3_DB)
+            this.connection=new sqlite3.Database(params)
+        }
         this.__escapeChar="`"
         this.__information_schema = "select sqlite_master.* from sqlite_master where  name="
-
         sqlite3Tab.__caheTablas={}
     }
     serialize(call)
     {
-        return this.conection.serialize(call)
+        return this.connection.serialize(call)
     }
     parallelize(call)
     {
-        return this.conectionparallelize(call)
+        return this.connectionparallelize(call)
     }
     /**
     * construlle un objeto dbtabla asociado a el nombre
@@ -49,26 +52,26 @@ class sqlite3Tab extends connect
         }
         return  sqlite3Tab.__caheTablas[tabla] = new sqlite3Tabla({
             tabla:tabla,
-            conection:this,
+            connection:this,
             callback:t=>typeof callback==="function"?callback(t):null,
             config:this.helpersConf()
         },typeof callback==="function" && create)
 
     }
     /**
-    * conecta con la base de datos
+    * connecta con la base de datos
     *
     */
     connect()
     {
-        //this.conection.connect(callback)
+        //this.connection.connect(callback)
     }
     /**
     * envia una consulta a la base de datos
     * @param {string} query - consulta sql
     * @return {Promise}
     */
-    query(query,option)
+    query(query,option={})
     {
         return new Promise((resolver,reject)=>
         {
@@ -76,7 +79,7 @@ class sqlite3Tab extends connect
             if(/^[\s]*select/i.test(query))
             {
 
-                this.conection.all(query,(error,result)=>
+                this.connection.all(query,option,(error,result)=>
                 {
                     if(error)
                     {
@@ -85,7 +88,7 @@ class sqlite3Tab extends connect
                     resolver(result)
                 })
             }else{
-                this.conection.run(query,option,(error,result)=>
+                this.connection.run(query,option,(error,result)=>
                 {
                     if(error)
                     {
@@ -98,27 +101,63 @@ class sqlite3Tab extends connect
         })
     }
     /**
-    * escapa el texto sql
-    * @param {string} str - texto
-    * @return {string}
+    * envia una consulta a la base de datos y obtiene una fila
+    * @param {string} query - consulta sql
+    * @return {Promise}
     */
-    __escapeString(str)
+    get(query,param={})
     {
-        return str
+        return new Promise((resolver,reject)=>
+        {
+            this.connection.get(query,param,(error,result)=>
+            {
+                if(error)
+                {
+                    return reject(error)
+                }
+                resolver(result)
+            })
+        })
     }
+    /**
+    * envia una consulta a la base de datos y obtiene una fila
+    * @param {string} query - consulta sql
+    * @return {Promise}
+    */
+    each(query,param={},callback)
+    {
+        return new Promise((resolver,reject)=>
+        {
+            if(typeof param==="function")
+            {
+                calback=param
+                param={}
+            }
+            this.connection.each(query,param,(error,result)=>
+            {
+                if(error)
+                {
+                    return reject(error)
+                }
+                callback(result)
+            },resolver)
+        })
+    }
+
+   
     /**
     * termina la coneccion
     */
     end()
     {
-        this.conection.close()
+        this.connection.close()
     }
     /**
     * termina la coneccion
     */
     close()
     {
-        this.conection.close()
+        this.connection.close()
     }
     /**
     * verificara la existencia de la tabla
