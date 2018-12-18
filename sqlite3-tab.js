@@ -48,7 +48,8 @@ class sqlite3Tab extends connect
             create=callback
         if(typeof sqlite3Tab.__caheTablas[tabla]!=="undefined")
         {
-            return sqlite3Tab.__caheTablas[tabla]
+			typeof callback==="function"?callback(sqlite3Tab.__caheTablas[tabla]):null
+            return sqlite3Tab.__caheTablas[tabla] 
         }
         return  sqlite3Tab.__caheTablas[tabla] = new sqlite3Tabla({
             tabla:tabla,

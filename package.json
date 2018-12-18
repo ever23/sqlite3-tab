@@ -16,7 +16,7 @@
   "license": "MIT",
   "devDependencies": {},
   "dependencies": {
-    "dbtabla": "^0.2.0",
+    "dbtabla": "^0.7.1",
     "sqlite3": "^4.0.4"
   }
 }
