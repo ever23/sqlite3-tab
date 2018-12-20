@@ -61,7 +61,7 @@ const test2=new model("test2",[
         name:"id",
         type:"int",
         primary:true,
-
+        autoincrement:true// simula el AUTO_INCREMENT de mysql
     },
     {
         name:"row1",
@@ -84,7 +84,7 @@ test2.foreingKey({ // se agrega las claves foraneas
     onDelete:'NO ACTION',
     // match: ' '
 })
-test2.insert(1,"hola",14,"2018/10/23")// datos de inicializacion
+test2.insert(null,"hola",14,"2018/10/23")// datos de inicializacion
 // el parametro tabla recibira el objeto de la tabla
 // y el segundo el objeto de coneccion
 // y el resto los parametros pasados en la llamada

@@ -50,10 +50,10 @@ describe("Test de la clase sqlite3-tab :tabla",()=>
         const sqlite= new connect(":memory:")
         sqlite.connection.run("create table `test1`(`id` int not null,`row1` text default 'ever',`row2` int not null,`row3` text null,primary key (`id`))")
         let test1=sqlite.tabla('test1')
-        return test1.insert(1,"text",12,"text2").then(ok=>
+        return test1.insert(12,"text",12,"text2").then(ok=>
         {
             assert.ok(ok instanceof sqlite3Ok,"debe retornar un objeto sqlite3Ok")
-            assert.equal(ok.$sql,"INSERT INTO `test1` (`id`,`row1`,`row2`,`row3`) VALUES (1,'text',12,'text2');")
+            assert.equal(ok.$sql,"INSERT INTO `test1` (`id`,`row1`,`row2`,`row3`) VALUES (12,'text',12,'text2');")
         })
 
     })
@@ -134,7 +134,6 @@ describe("Test de la clase sqlite3-tab :tabla",()=>
             {
                 reject(e)
             }
-
         })).then(test4=>
         {
             return test4.select().then(d=>
@@ -143,5 +142,26 @@ describe("Test de la clase sqlite3-tab :tabla",()=>
             })
 
         })
+    })
+    it('silumacion de AUTO_INCREMENT usando modelos',()=>
+    {
+        return (new Promise(async(resolve,reject)=>
+        {
+            const sqlite= new connect(":memory:")
+            sqlite.pathModels(path.dirname(__filename)+"/modelo")
+            let test4=sqlite.tabla('test4')
+            await test4.insert(null,"text",12,"text2")
+            await test4.insert([null,"mas texto",13,"text2"])
+            await test4.insert({una:"text3",row2:14,dos:"asdasdasdasd"})
+            test4.select().then(resolve).catch(reject)
+        })).then(ok=>
+        {
+            assert.ok(ok instanceof Array)
+            assert.equal(ok.length,3)
+            assert.equal(ok[0].id_key2,1)
+            assert.equal(ok[1].id_key2,2)
+            assert.equal(ok[2].id_key2,3)
+        })
+
     })
 })
