@@ -5,7 +5,7 @@ const model=require("sql-model")
 //console.log(sqlite3)
 /**
 * mysqlTable
-* crea una coneccion a una base de datos mysql
+* crea una conexion a una base de datos mysql
 */
 class sqlite3Tab extends connect
 {
@@ -45,10 +45,10 @@ class sqlite3Tab extends connect
     tabla(tabla,callback,verify=false)
     {
         if(typeof callback ==="boolean")
-            create=callback
+            verify=callback
         if(typeof sqlite3Tab.__caheTablas[tabla]!=="undefined")
         {
-			typeof callback==="function"?callback(sqlite3Tab.__caheTablas[tabla]):null
+            typeof callback==="function"?callback(sqlite3Tab.__caheTablas[tabla]):null
             return sqlite3Tab.__caheTablas[tabla] 
         }
         return  sqlite3Tab.__caheTablas[tabla] = new sqlite3Tabla({
@@ -72,15 +72,14 @@ class sqlite3Tab extends connect
     * @param {string} query - consulta sql
     * @return {Promise}
     */
-    query(query,option={})
+    query(query,...params)
     {
         return new Promise((resolver,reject)=>
         {
 
             if(/^[\s]*select/i.test(query))
             {
-
-                this.connection.all(query,option,(error,result)=>
+                this.connection.all(query,...params,(error,result)=>
                 {
                     if(error)
                     {
@@ -89,7 +88,7 @@ class sqlite3Tab extends connect
                     resolver(result)
                 })
             }else{
-                this.connection.run(query,option,(error,result)=>
+                this.connection.run(query,...params,(error,result)=>
                 {
                     if(error)
                     {
@@ -131,7 +130,7 @@ class sqlite3Tab extends connect
         {
             if(typeof param==="function")
             {
-                calback=param
+                callback=param
                 param={}
             }
             this.connection.each(query,param,(error,result)=>
@@ -147,14 +146,14 @@ class sqlite3Tab extends connect
 
 
     /**
-    * termina la coneccion
+    * termina la conexion
     */
     end()
     {
         this.connection.close()
     }
     /**
-    * termina la coneccion
+    * termina la conexion
     */
     close()
     {
@@ -162,24 +161,30 @@ class sqlite3Tab extends connect
     }
     /**
     * verificara la existencia de la tabla
-    * en la base de datos y pasa lo metadatos de la misma calback en
+    * en la base de datos y retorna una promesa
     * el segundo parametro
     * @param {string} table - nombre de la tabla
-    * @param {function} callback - funcion a ejecutar cuando se obtengan los metadatos
     */
-    __keysInTable(table,callback)
+    __keysInTable(table)
     {
         return new Promise((res,rej)=>
         {
             this.query(`${this.__information_schema}'${table}'`)
                 .then(result=>{
-                    if(!this.inModel(table,res,result.length==0))
-                    {
-                        if(result.length==0)
-                            rej("la tabla no existe")
-                        else
-                            res((new model(result[0].sql,this.__escapeChar)).getData())
-                    }
+                    this.inModel(table,result.length==0)
+                        .then(res).catch(e=>
+                        {
+                            if(e===undefined)
+                            {
+                                if(result.length==0)
+                                    rej("la tabla no existe")
+                                else
+                                    res((new model(result[0].sql,this.__escapeChar)).getData())
+                            }else
+                            {
+                                rej(e)
+                            }
+                        })
                 }).catch(rej)
         })
 

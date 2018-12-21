@@ -10,13 +10,12 @@ function createAndInsert(callback)
     return (new Promise((resolve,reject)=>
     {
         const sqlite= new connect(":memory:")
-        sqlite.query("create table `test1`(`id` int not null,`row1` text default 'ever',`row2` int not null,`row3` text null,primary key (`id`))")
+        sqlite.query("create table `test1`(`id` int not null,`row1` text default 'ever',`row2` int not null,`row3` date null,primary key (`id`))")
             .then(ok=>
             {
                 sqlite.query("INSERT INTO `test1` (`id`,`row1`,`row2`,`row3`) VALUES (1,'text',12,'text2');")
                         .then(ok=>callback(resolve,reject,sqlite)).catch(reject)
             }).catch(reject)
-
     }))
 }
 describe("Test de la clase sqlite3-tab :tabla",()=>
@@ -53,7 +52,7 @@ describe("Test de la clase sqlite3-tab :tabla",()=>
         return test1.insert(12,"text",12,"text2").then(ok=>
         {
             assert.ok(ok instanceof sqlite3Ok,"debe retornar un objeto sqlite3Ok")
-            assert.equal(ok.$sql,"INSERT INTO `test1` (`id`,`row1`,`row2`,`row3`) VALUES (12,'text',12,'text2');")
+            //assert.equal(ok.$sql,"INSERT INTO `test1` (`id`,`row1`,`row2`,`row3`) VALUES (12,'text',12,'text2');")
         })
 
     })
@@ -77,14 +76,17 @@ describe("Test de la clase sqlite3-tab :tabla",()=>
     })
     it('dbTabla:update',()=>
     {
-        return createAndInsert((resolve,reject,sqlite)=>
+        return createAndInsert(async(resolve,reject,sqlite)=>
             {
                 let test1=sqlite.tabla('test1')
-                test1.update({row2:"hola"},{id:1}).then(resolve).catch(reject)
+                let ok=await test1.update({row2:"hola"},{id:1})
+                if(ok.error)
+                    throw ok
+                test1.selectById(1).then(resolve).catch(reject)
             }).then(data=>
             {
-                assert.ok(data instanceof sqlite3Ok,"debe retornar un objeto sqlite3Result")
-                assert.equal(data.$sql,"UPDATE `test1` SET `row2`='hola' WHERE `id`=1;")
+                assert.equal(data.row2,"hola")
+                //assert.equal(data.$sql,"UPDATE `test1` SET `row2`='hola' WHERE `id`=1;")
 
             })
     })
@@ -117,7 +119,7 @@ describe("Test de la clase sqlite3-tab :tabla",()=>
         {
             return test3.select().then(d=>
             {
-                 assert.ok(test3 instanceof dbtabla,"debe retornar un objeto dbtabla")
+                assert.ok(test3 instanceof dbtabla,"debe retornar un objeto dbtabla")
             })
 
         })
@@ -138,7 +140,7 @@ describe("Test de la clase sqlite3-tab :tabla",()=>
         {
             return test4.select().then(d=>
             {
-                 assert.ok(test4 instanceof dbtabla,"debe retornar un objeto dbtabla")
+                assert.ok(test4 instanceof dbtabla,"debe retornar un objeto dbtabla")
             })
 
         })
