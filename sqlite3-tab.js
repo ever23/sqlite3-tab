@@ -46,12 +46,12 @@ class sqlite3Tab extends connect
     {
         if(typeof callback ==="boolean")
             verify=callback
-        if(typeof sqlite3Tab.__caheTablas[tabla]!=="undefined")
+        if(typeof this.__caheTablas[tabla]!=="undefined")
         {
-            typeof callback==="function"?callback(sqlite3Tab.__caheTablas[tabla]):null
-            return sqlite3Tab.__caheTablas[tabla] 
+            typeof callback==="function"?callback(this.__caheTablas[tabla]):null
+            return this.__caheTablas[tabla]
         }
-        return  sqlite3Tab.__caheTablas[tabla] = new sqlite3Tabla({
+        return  this.__caheTablas[tabla] = new sqlite3Tabla({
             tabla:tabla,
             connection:this,
             callback:t=>typeof callback==="function"?callback(t):null,
