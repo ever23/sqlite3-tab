@@ -31,7 +31,7 @@ Para usar este modulo solo es nesesario conocer un poco el api de sqlite3 los pa
 en la funcion Database de sqlite3, usando el metodo *`tabla(tabla)`* se obtiene
 un objeto dbTabla que representa a la tabla con el nombre del parametro en la base de datos.
 
-[Mas documentacion sobre dbTabla..](https://github.com/ever23/dbtabla#dbtabla)
+[Mas documentacion sobre dbTabla..](https://github.com/ever23/dbtabla#dbtabla-1)
 ```js
 // file ./index.js
 const sqlite=require("sqlite3-tab")
