@@ -1,4 +1,4 @@
-const model=require("sql-model")
+const model=require("tabla-model")
 const test2=new model("test4",[
     {
         name:"id_key2",

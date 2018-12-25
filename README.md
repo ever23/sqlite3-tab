@@ -52,10 +52,10 @@ para resolver esto podemos crear un modelo para
 la tabla test1 y cargarlo esto ara que se verifique la existencia y
 si no existe la tabla sea creada e inicializada automaticamente para esto
 podemos crear un directorio que contendra los modelos por ejemplo ./model/
-y crear los modelos nesesarios para el proyecto usando el modulo sql-model
+y crear los modelos nesesarios para el proyecto usando el modulo tabla-model
 ```js
 // file ./model/test1.js
-const model=require("sql-model")
+const model=require("tabla-model")
 const test2=new model("test2",[
     {
         name:"id",
@@ -120,7 +120,7 @@ test2.insert(1,"un texto","otro texto")
     })
 test2.miMetodo("hola")
 ```
-[Mas documentacion sobre sql-model..](https://github.com/ever23/sql-model#uso)
+[Mas documentacion sobre tabla-model..](https://github.com/ever23/tabla-model#uso)
 
 ## sqlite3Tab#constructor(config)
 
@@ -152,11 +152,11 @@ Verifica si un modelo existe y lo retorna si no existe retorna *`false`*
 
 ## sqlite3Tab#addModel(model)
 Agrega un modelo
-* `model {sqlModel|object|string}`: Si es un objeto instanceado de sql-model se agregara a la lista de modelos, si es un objeto pero no de sql-model se tomara como los datos para factorizar un modelo deberia tener el formato *`{tabla:String, campos:Array, foreingKey:Array}`* y su es un string deberia ser una clausula sql CREATE TABLE de la cual se factorizara el modelo
+* `model {sqlModel|object|string}`: Si es un objeto instanceado de tabla-model se agregara a la lista de modelos, si es un objeto pero no de tabla-model se tomara como los datos para factorizar un modelo deberia tener el formato *`{tabla:String, campos:Array, foreingKey:Array}`* y su es un string deberia ser una clausula sql CREATE TABLE de la cual se factorizara el modelo
 ```js
 //ejemplo 1
 const sqlite=require("sqlite3-tab")
-const model=require("sql-model")
+const model=require("tabla-model")
 let connect= new sqlite(":memory:")
 const test2=new model("test2",{
     campos:[

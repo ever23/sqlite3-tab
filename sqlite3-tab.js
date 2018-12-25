@@ -1,7 +1,7 @@
 const sqlite3=require("sqlite3").verbose()
 const sqlite3Tabla=require("./lib/sqlite3Tabla")
 const {SQLITE3_DB,connect}= sqlite3Tabla
-const model=require("sql-model")
+const model=require("tabla-model")
 //console.log(sqlite3)
 /**
 * mysqlTable
