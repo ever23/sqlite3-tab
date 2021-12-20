@@ -1,6 +1,6 @@
 {
   "name": "sqlite3-tab",
-  "version": "1.1.4",
+  "version": "1.2",
   "description": "interface de alto nivel para consultas sqlite3",
   "main": "sqlite3-tab.js",
   "repository": {
