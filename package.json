@@ -1,8 +1,8 @@
 {
   "name": "sqlite3-tab",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "description": "interface de alto nivel para consultas sqlite3",
-  "main": "index.js",
+  "main": "sqlite3-tab.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ever23/sqlite3-tab.git"
@@ -20,6 +20,6 @@
   "devDependencies": {},
   "dependencies": {
     "dbtabla": "^0.8.8",
-    "sqlite3": "^4.0.4"
+    "sqlite3": "^5.0.2"
   }
 }
