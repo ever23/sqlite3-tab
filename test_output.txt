@@ -1,0 +1,32 @@
+﻿C:\programacion\dbtabla\sqlite3-tab\lib\sqlite3Tabla.js:93
+    }
+    ^
+
+SyntaxError: Identifier '#insert' has already been declared
+    at wrapSafe (node:internal/modules/cjs/loader:1743:18)
+    at Module._compile (node:internal/modules/cjs/loader:1786:20)
+    at Object..js (node:internal/modules/cjs/loader:1943:10)
+    at Module.load (node:internal/modules/cjs/loader:1533:32)
+    at Module._load (node:internal/modules/cjs/loader:1335:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.require (node:internal/modules/cjs/loader:1556:12)
+    at require (node:internal/modules/helpers:152:16)
+    at Object.<anonymous> (C:\programacion\dbtabla\sqlite3-tab\sqlite3-tab.js:2:20)
+    at Module._compile (node:internal/modules/cjs/loader:1812:14)
+
+Node.js v24.14.0
+[31mÔ£û test\sqlite3Tab.js [90m(257.3436ms)[39m[39m
+[34mÔä╣ tests 1[39m
+[34mÔä╣ suites 0[39m
+[34mÔä╣ pass 0[39m
+[34mÔä╣ fail 1[39m
+[34mÔä╣ cancelled 0[39m
+[34mÔä╣ skipped 0[39m
+[34mÔä╣ todo 0[39m
+[34mÔä╣ duration_ms 269.5554[39m
+
+[31mÔ£û failing tests:[39m
+
+test at test\sqlite3Tab.js:1:1
+[31mÔ£û test\sqlite3Tab.js [90m(257.3436ms)[39m[39m
+  'test failed'

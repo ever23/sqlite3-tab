@@ -1,0 +1,132 @@
+﻿(node:19716) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+DEBUG: this._caheTablas is: {}
+DEBUG: this._caheTablas is: {}
+DEBUG: this._caheTablas is: {}
+ÔûÂ Test de la clase sqlite3-tab :tabla
+  Ô£ö obtencion del objeto dbtabla (2.7158ms)
+  Ô£û obtencion del objeto dbtabla async (1.5459ms)
+  Ô£û dbTabla:insert (0.811ms)
+DEBUG: this._caheTablas is: {}
+  Ô£û dbTabla:select (8.1771ms)
+DEBUG: this._caheTablas is: {}
+  Ô£û dbTabla:update (1.9643ms)
+DEBUG: this._caheTablas is: {}
+DEBUG: this._caheTablas is: {}
+DEBUG: this._caheTablas is: {}
+DEBUG: this._caheTablas is: {}
+  Ô£û dbTabla:delete (2.6034ms)
+  Ô£û load model test3 (2.9902ms)
+  Ô£û load model test4 (0.6257ms)
+  Ô£û silumacion de AUTO_INCREMENT usando modelos (2.7956ms)
+Ô£û Test de la clase sqlite3-tab :tabla (26.451ms)
+Ôä╣ tests 9
+Ôä╣ suites 1
+Ôä╣ pass 1
+Ôä╣ fail 8
+Ôä╣ cancelled 0
+Ôä╣ skipped 0
+Ôä╣ todo 0
+Ôä╣ duration_ms 224.1749
+
+Ô£û failing tests:
+
+test at test\dbTabla.js:31:5
+Ô£û obtencion del objeto dbtabla async (1.5459ms)
+  TypeError: this._connection.__keysInTable is not a function
+      at sqlite3Tabla._verifyKeys (C:\programacion\dbtabla\sqlite3-tab\node_modules\dbtabla\lib\dbTabla.js:57:30)
+      at new dbTabla (C:\programacion\dbtabla\sqlite3-tab\node_modules\dbtabla\lib\dbTabla.js:31:18)
+      at new sqlite3Tabla (C:\programacion\dbtabla\sqlite3-tab\lib\sqlite3Tabla.js:9:1)
+      at sqlite3Tab.tabla (C:\programacion\dbtabla\sqlite3-tab\sqlite3-tab.js:55:43)
+      at C:\programacion\dbtabla\sqlite3-tab\test\dbTabla.js:39:20
+      at new Promise (<anonymous>)
+      at TestContext.<anonymous> (C:\programacion\dbtabla\sqlite3-tab\test\dbTabla.js:35:17)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:787:18)
+
+test at test\dbTabla.js:48:5
+Ô£û dbTabla:insert (0.811ms)
+  TypeError: this._connection.__keysInTable is not a function
+      at sqlite3Tabla._verifyKeys (C:\programacion\dbtabla\sqlite3-tab\node_modules\dbtabla\lib\dbTabla.js:57:30)
+      at C:\programacion\dbtabla\sqlite3-tab\lib\sqlite3Tabla.js:46:18
+      at new Promise (<anonymous>)
+      at sqlite3Tabla.insert (C:\programacion\dbtabla\sqlite3-tab\lib\sqlite3Tabla.js:44:16)
+      at TestContext.<anonymous> (C:\programacion\dbtabla\sqlite3-tab\test\dbTabla.js:53:22)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+
+test at test\dbTabla.js:60:5
+Ô£û dbTabla:select (8.1771ms)
+  TypeError: this._connection.__keysInTable is not a function
+      at sqlite3Tabla._verifyKeys (C:\programacion\dbtabla\sqlite3-tab\node_modules\dbtabla\lib\dbTabla.js:57:30)
+      at C:\programacion\dbtabla\sqlite3-tab\node_modules\dbtabla\lib\dbTabla.js:161:18
+      at new Promise (<anonymous>)
+      at sqlite3Tabla.select (C:\programacion\dbtabla\sqlite3-tab\node_modules\dbtabla\lib\dbTabla.js:159:16)
+      at C:\programacion\dbtabla\sqlite3-tab\test\dbTabla.js:65:23
+      at C:\programacion\dbtabla\sqlite3-tab\test\dbTabla.js:18:35
+
+test at test\dbTabla.js:78:5
+Ô£û dbTabla:update (1.9643ms)
+  TypeError: this._connection.__keysInTable is not a function
+      at sqlite3Tabla._verifyKeys (C:\programacion\dbtabla\sqlite3-tab\node_modules\dbtabla\lib\dbTabla.js:57:30)
+      at C:\programacion\dbtabla\sqlite3-tab\lib\sqlite3Tabla.js:114:18
+      at new Promise (<anonymous>)
+      at sqlite3Tabla.update (C:\programacion\dbtabla\sqlite3-tab\lib\sqlite3Tabla.js:112:16)
+      at C:\programacion\dbtabla\sqlite3-tab\test\dbTabla.js:83:36
+      at C:\programacion\dbtabla\sqlite3-tab\test\dbTabla.js:18:35
+
+test at test\dbTabla.js:94:5
+Ô£û dbTabla:delete (2.6034ms)
+  TypeError: this._connection.__keysInTable is not a function
+      at sqlite3Tabla._verifyKeys (C:\programacion\dbtabla\sqlite3-tab\node_modules\dbtabla\lib\dbTabla.js:57:30)
+      at C:\programacion\dbtabla\sqlite3-tab\node_modules\dbtabla\lib\dbTabla.js:387:18
+      at new Promise (<anonymous>)
+      at sqlite3Tabla.delete (C:\programacion\dbtabla\sqlite3-tab\node_modules\dbtabla\lib\dbTabla.js:385:16)
+      at C:\programacion\dbtabla\sqlite3-tab\test\dbTabla.js:99:29
+      at C:\programacion\dbtabla\sqlite3-tab\test\dbTabla.js:18:35
+
+test at test\dbTabla.js:106:5
+Ô£û load model test3 (2.9902ms)
+  TypeError: this._connection.__keysInTable is not a function
+      at sqlite3Tabla._verifyKeys (C:\programacion\dbtabla\sqlite3-tab\node_modules\dbtabla\lib\dbTabla.js:57:30)
+      at new dbTabla (C:\programacion\dbtabla\sqlite3-tab\node_modules\dbtabla\lib\dbTabla.js:31:18)
+      at new sqlite3Tabla (C:\programacion\dbtabla\sqlite3-tab\lib\sqlite3Tabla.js:9:1)
+      at sqlite3Tab.tabla (C:\programacion\dbtabla\sqlite3-tab\sqlite3-tab.js:55:43)
+      at C:\programacion\dbtabla\sqlite3-tab\test\dbTabla.js:113:25
+      at new Promise (<anonymous>)
+      at TestContext.<anonymous> (C:\programacion\dbtabla\sqlite3-tab\test\dbTabla.js:108:17)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:787:18)
+
+test at test\dbTabla.js:128:5
+Ô£û load model test4 (0.6257ms)
+  TypeError: this._connection.__keysInTable is not a function
+      at sqlite3Tabla._verifyKeys (C:\programacion\dbtabla\sqlite3-tab\node_modules\dbtabla\lib\dbTabla.js:57:30)
+      at new dbTabla (C:\programacion\dbtabla\sqlite3-tab\node_modules\dbtabla\lib\dbTabla.js:31:18)
+      at new sqlite3Tabla (C:\programacion\dbtabla\sqlite3-tab\lib\sqlite3Tabla.js:9:1)
+      at sqlite3Tab.tabla (C:\programacion\dbtabla\sqlite3-tab\sqlite3-tab.js:55:43)
+      at C:\programacion\dbtabla\sqlite3-tab\test\dbTabla.js:135:25
+      at new Promise (<anonymous>)
+      at TestContext.<anonymous> (C:\programacion\dbtabla\sqlite3-tab\test\dbTabla.js:130:17)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:787:18)
+
+test at test\dbTabla.js:149:5
+Ô£û silumacion de AUTO_INCREMENT usando modelos (2.7956ms)
+  TypeError: this._connection.__keysInTable is not a function
+      at sqlite3Tabla._verifyKeys (C:\programacion\dbtabla\sqlite3-tab\node_modules\dbtabla\lib\dbTabla.js:57:30)
+      at C:\programacion\dbtabla\sqlite3-tab\lib\sqlite3Tabla.js:46:18
+      at new Promise (<anonymous>)
+      at sqlite3Tabla.insert (C:\programacion\dbtabla\sqlite3-tab\lib\sqlite3Tabla.js:44:16)
+      at C:\programacion\dbtabla\sqlite3-tab\test\dbTabla.js:156:25
+      at new Promise (<anonymous>)
+      at TestContext.<anonymous> (C:\programacion\dbtabla\sqlite3-tab\test\dbTabla.js:151:17)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:787:18)

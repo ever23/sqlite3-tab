@@ -23,9 +23,8 @@ class sqlite3Tab extends connect
             super(params,SQLITE3_DB)
             this.connection=new sqlite3.Database(params)
         }
-        this.__escapeChar="`"
-        this.__information_schema = "select sqlite_master.* from sqlite_master where  name="
-        sqlite3Tab.__caheTablas={}
+        this._escapeChar="`"
+        this._information_schema = "select sqlite_master.* from sqlite_master where  name="
     }
     serialize(call)
     {
@@ -46,12 +45,13 @@ class sqlite3Tab extends connect
     {
         if(typeof callback ==="boolean")
             verify=callback
-        if(typeof this.__caheTablas[tabla]!=="undefined")
+        console.log('DEBUG: this._caheTablas is:', this._caheTablas);
+        if(typeof this._caheTablas[tabla]!=="undefined")
         {
-            typeof callback==="function"?callback(this.__caheTablas[tabla]):null
-            return this.__caheTablas[tabla]
+            typeof callback==="function"?callback(this._caheTablas[tabla]):null
+            return this._caheTablas[tabla]
         }
-        return  this.__caheTablas[tabla] = new sqlite3Tabla({
+        return  this._caheTablas[tabla] = new sqlite3Tabla({
             tabla:tabla,
             connection:this,
             callback:t=>typeof callback==="function"?callback(t):null,
@@ -165,11 +165,11 @@ class sqlite3Tab extends connect
     * el segundo parametro
     * @param {string} table - nombre de la tabla
     */
-    __keysInTable(table)
+    _keysInTable(table)
     {
         return new Promise((res,rej)=>
         {
-            this.query(`${this.__information_schema}'${table}'`)
+            this.query(`${this._information_schema}'${table}'`)
                 .then(result=>{
                     this.inModel(table,result.length==0)
                         .then(res).catch(e=>
@@ -179,7 +179,7 @@ class sqlite3Tab extends connect
                                 if(result.length==0)
                                     rej("la tabla no existe")
                                 else
-                                    res((new model(result[0].sql,this.__escapeChar)).getData())
+                                    res((new model(result[0].sql,this._escapeChar)).getData())
                             }else
                             {
                                 rej(e)

@@ -1,3 +1,4 @@
+const { describe, it } = require('node:test');
 const assert= require("assert")
 const dbtabla = require("dbtabla")
 const connect = require("../sqlite3-tab.js")

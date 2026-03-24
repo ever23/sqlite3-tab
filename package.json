@@ -1,6 +1,6 @@
 {
   "name": "sqlite3-tab",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "description": "interface de alto nivel para consultas sqlite3",
   "main": "sqlite3-tab.js",
   "repository": {
@@ -8,8 +8,8 @@
     "url": "git+https://github.com/ever23/sqlite3-tab.git"
   },
   "scripts": {
-    "test": "mocha ./test/index.js ",
-    "lint": "eslint ./sqlite3-tab.js ./lib"
+    "test": "node --test ./test/index.js",
+    "lint": "eslint ."
   },
   "keywords": [
     "sql",
@@ -17,9 +17,16 @@
   ],
   "author": "enyerverfranco@gmail.com",
   "license": "MIT",
-  "devDependencies": {},
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.1.0",
+    "globals": "^17.4.0"
+  },
   "dependencies": {
-    "dbtabla": "^0.8.8",
-    "sqlite3": "^5.0.2"
+    "dbtabla": "^2.1.2",
+    "sqlite3": "^6.0.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

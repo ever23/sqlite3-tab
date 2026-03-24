@@ -1,3 +1,4 @@
+const { describe, it } = require('node:test');
 const assert= require("assert")
 const connect = require("../sqlite3-tab.js")
 
@@ -9,7 +10,7 @@ describe("Test de la clase sqlite3-tab",()=>
         assert.equal(typeof sqlite.tabla,"function")
         assert.equal(typeof sqlite.query,"function")
         assert.equal(typeof sqlite.connect,"function")
-        assert.equal(typeof sqlite.__keysInTable,"function")
+        assert.equal(typeof sqlite._keysInTable,"function")
         assert.equal(typeof sqlite.end,"function")
         sqlite.end()
     })

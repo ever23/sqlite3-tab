@@ -1,0 +1,127 @@
+﻿(node:8432) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+ÔûÂ Test de la clase sqlite3-tab :tabla
+  Ô£û obtencion del objeto dbtabla (2.0764ms)
+  Ô£û obtencion del objeto dbtabla async (0.8769ms)
+  Ô£û dbTabla:insert (0.4015ms)
+  Ô£û dbTabla:select (8.6738ms)
+  Ô£û dbTabla:update (1.8362ms)
+  Ô£û dbTabla:delete (1.7842ms)
+  Ô£û load model test3 (2.2726ms)
+  Ô£û load model test4 (0.7059ms)
+  Ô£û silumacion de AUTO_INCREMENT usando modelos (3.3276ms)
+Ô£û Test de la clase sqlite3-tab :tabla (23.8058ms)
+Ôä╣ tests 9
+Ôä╣ suites 1
+Ôä╣ pass 0
+Ôä╣ fail 9
+Ôä╣ cancelled 0
+Ôä╣ skipped 0
+Ôä╣ todo 0
+Ôä╣ duration_ms 225.6019
+
+Ô£û failing tests:
+
+test at test\dbTabla.js:24:5
+Ô£û obtencion del objeto dbtabla (2.0764ms)
+  TypeError: Cannot read properties of undefined (reading 'test1')
+      at sqlite3Tab.tabla (C:\programacion\dbtabla\sqlite3-tab\sqlite3-tab.js:49:35)
+      at TestContext.<anonymous> (C:\programacion\dbtabla\sqlite3-tab\test\dbTabla.js:27:26)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.start (node:internal/test_runner/test:1015:17)
+      at node:internal/test_runner/test:1531:71
+      at node:internal/per_context/primordials:466:82
+      at new Promise (<anonymous>)
+      at new SafePromise (node:internal/per_context/primordials:435:3)
+      at node:internal/per_context/primordials:466:9
+
+test at test\dbTabla.js:31:5
+Ô£û obtencion del objeto dbtabla async (0.8769ms)
+  TypeError: Cannot read properties of undefined (reading 'test1')
+      at sqlite3Tab.tabla (C:\programacion\dbtabla\sqlite3-tab\sqlite3-tab.js:49:35)
+      at C:\programacion\dbtabla\sqlite3-tab\test\dbTabla.js:39:20
+      at new Promise (<anonymous>)
+      at TestContext.<anonymous> (C:\programacion\dbtabla\sqlite3-tab\test\dbTabla.js:35:17)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+
+test at test\dbTabla.js:48:5
+Ô£û dbTabla:insert (0.4015ms)
+  TypeError: Cannot read properties of undefined (reading 'test1')
+      at sqlite3Tab.tabla (C:\programacion\dbtabla\sqlite3-tab\sqlite3-tab.js:49:35)
+      at TestContext.<anonymous> (C:\programacion\dbtabla\sqlite3-tab\test\dbTabla.js:52:26)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:787:7)
+
+test at test\dbTabla.js:60:5
+Ô£û dbTabla:select (8.6738ms)
+  TypeError: Cannot read properties of undefined (reading 'test1')
+      at sqlite3Tab.tabla (C:\programacion\dbtabla\sqlite3-tab\sqlite3-tab.js:49:35)
+      at C:\programacion\dbtabla\sqlite3-tab\test\dbTabla.js:64:34
+      at C:\programacion\dbtabla\sqlite3-tab\test\dbTabla.js:18:35
+
+test at test\dbTabla.js:78:5
+Ô£û dbTabla:update (1.8362ms)
+  TypeError: Cannot read properties of undefined (reading 'test1')
+      at sqlite3Tab.tabla (C:\programacion\dbtabla\sqlite3-tab\sqlite3-tab.js:49:35)
+      at C:\programacion\dbtabla\sqlite3-tab\test\dbTabla.js:82:34
+      at C:\programacion\dbtabla\sqlite3-tab\test\dbTabla.js:18:35
+
+test at test\dbTabla.js:94:5
+Ô£û dbTabla:delete (1.7842ms)
+  TypeError: Cannot read properties of undefined (reading 'test1')
+      at sqlite3Tab.tabla (C:\programacion\dbtabla\sqlite3-tab\sqlite3-tab.js:49:35)
+      at C:\programacion\dbtabla\sqlite3-tab\test\dbTabla.js:98:34
+      at C:\programacion\dbtabla\sqlite3-tab\test\dbTabla.js:18:35
+
+test at test\dbTabla.js:106:5
+Ô£û load model test3 (2.2726ms)
+  TypeError: Cannot read properties of undefined (reading 'test3')
+      at sqlite3Tab.tabla (C:\programacion\dbtabla\sqlite3-tab\sqlite3-tab.js:49:35)
+      at C:\programacion\dbtabla\sqlite3-tab\test\dbTabla.js:113:25
+      at new Promise (<anonymous>)
+      at TestContext.<anonymous> (C:\programacion\dbtabla\sqlite3-tab\test\dbTabla.js:108:17)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:787:7)
+
+test at test\dbTabla.js:128:5
+Ô£û load model test4 (0.7059ms)
+  TypeError: Cannot read properties of undefined (reading 'test4')
+      at sqlite3Tab.tabla (C:\programacion\dbtabla\sqlite3-tab\sqlite3-tab.js:49:35)
+      at C:\programacion\dbtabla\sqlite3-tab\test\dbTabla.js:135:25
+      at new Promise (<anonymous>)
+      at TestContext.<anonymous> (C:\programacion\dbtabla\sqlite3-tab\test\dbTabla.js:130:17)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:787:7)
+
+test at test\dbTabla.js:149:5
+Ô£û silumacion de AUTO_INCREMENT usando modelos (3.3276ms)
+  TypeError: Cannot read properties of undefined (reading 'test4')
+      at sqlite3Tab.tabla (C:\programacion\dbtabla\sqlite3-tab\sqlite3-tab.js:49:35)
+      at C:\programacion\dbtabla\sqlite3-tab\test\dbTabla.js:155:30
+      at new Promise (<anonymous>)
+      at TestContext.<anonymous> (C:\programacion\dbtabla\sqlite3-tab\test\dbTabla.js:151:17)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:787:7)
