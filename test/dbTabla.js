@@ -4,7 +4,7 @@ const dbtabla = require("dbtabla")
 const connect = require("../sqlite3-tab.js")
 const sqlite3Ok = require("../lib/sqlite3Ok.js")
 const sqlite3Result = require("../lib/sqlite3Result.js")
-const dbRow = require("dbtabla/lib/dbRow")
+const { dbRow } = require("dbtabla")
 const path = require("path")
 function createAndInsert(callback)
 {
