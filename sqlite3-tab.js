@@ -22,6 +22,7 @@ class sqlite3Tab extends connect {
         }
         this._escapeChar = "`"
         this._information_schema = "select sqlite_master.* from sqlite_master where  name="
+        this._transactionConn = null
     }
     serialize(call) {
         return this.connection.serialize(call)
@@ -83,6 +84,32 @@ class sqlite3Tab extends connect {
             }
 
         })
+    }
+    /**
+    * envia una sentencia BEGIN TRANSACTION a la base de datos
+    *
+    * @return {Promise}
+    */
+    async beginTransaction() {
+        return this.query("BEGIN TRANSACTION");
+    }
+
+    /**
+    * envia una sentencia commit a la base de datos
+    *
+    * @return {Promise}
+    */
+    async commit() {
+        return this.query("COMMIT");
+    }
+
+    /**
+    * envia una sentencia rollback a la base de datos
+    *
+    * @return {Promise}
+    */
+    async rollback() {
+        return this.query("ROLLBACK");
     }
     /**
     * envia una consulta a la base de datos y obtiene una fila
