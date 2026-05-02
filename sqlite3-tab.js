@@ -48,7 +48,7 @@ class sqlite3Tab extends connect {
             connection: this,
             callback: t => typeof callback === "function" ? callback(t) : null,
             config: this.helpersConf()
-        }, typeof callback === "function" && verify)
+        }, verify)
 
     }
     /**
