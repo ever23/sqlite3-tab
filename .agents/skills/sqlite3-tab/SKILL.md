@@ -105,3 +105,20 @@ const datos = await usuarios.select(
 - `select(campos, joins, where, group, having, order, limit)`: Retorna un array de objetos.
 - `insert(datos)`: Inserta un objeto o array de objetos.
 - `query(sql)`: Ejecuta SQL nativo (usar solo si la abstracción no es suficiente).
+
+## 7. Sintaxis Avanzada de Filtrado (Where Object)
+
+Al utilizar objetos para el parámetro `where`, puedes usar operadores especiales:
+- **Sufijos:** `campo%` (LIKE), `campo!` (!=), `campo>` (>), `campo<` (<), `campo>=` (>=), `campo<=` (<=).
+- **Prefijos:** `||campo` (OR), `&&campo` (AND).
+
+### Nota sobre Cadenas Numéricas
+Los strings con ceros a la izquierda (ej: `"01"`) se tratan siempre como **strings** (con comillas) para preservar el formato.
+
+> **Peligro de Polimorfismo:**
+> Si pasas un objeto como primer argumento en `select()`, se interpretará como **Joins**. Para filtrar por objeto de forma segura:
+> `await tabla.select(null, null, { "campo": "valor" });`
+>
+> **Sintaxis Recomendada (Objeto Único):**
+> La forma más limpia es usar un objeto con llaves explícitas:
+> `await tabla.select({ where: { activo: 1 }, limit: 5 });`
