@@ -23,7 +23,7 @@
     "globals": "^17.4.0"
   },
   "dependencies": {
-    "dbtabla": "^2.1.2",
+    "dbtabla": "^2.2.9",
     "sqlite3": "^6.0.1"
   },
   "engines": {
