@@ -85,59 +85,55 @@ await usuarios.insert({ nombre: 'Antigravity', puntos: 100 });
 await usuarios.insert(null, 'Nuevo Usuario', 50);
 ```
 
-### Consultas (Select)
-El método `.select()` es flexible y potente.
+### Consultas: Sintaxis de Objeto ?nico (Recomendada)
+La forma principal y recomendada de realizar consultas en `sqlite3-tab` es pasando un ?nico objeto con propiedades nombradas. Esto elimina cualquier ambig?edad en los par?metros:
 
 ```javascript
-// 1. Selección simple con filtros
-const todos = await usuarios.select("puntos > 10");
-
-// 2. Selección de campos específicos
-const nombres = await usuarios.select(["nombre"], "puntos < 50");
-
-// 3. Selección con Joins Dinámicos
-// Prefijos: '>' Right Join (Simulado), '<' Left Join, '=' Inner Join
-const conPerfiles = await usuarios.select(
-    ["u.nombre", "p.bio"], 
-    { "<perfiles": "u.id = p.id_usuario" }, 
-    "u.puntos > 0"
-);
-
-// 4. Búsqueda por ID
-const user = await usuarios.selectById(1);
-
-// 5. Búsqueda Inteligente (LIKE)
-const resultados = await usuarios.busqueda("Antigravity", ["nombre"]);
-```
-
-#### Sintaxis Avanzada de Filtrado (Where Object)
-Al usar un objeto en el parámetro `where`, puedes usar prefijos y sufijos para operadores especiales:
-*   **Sufijos:** `campo%` (LIKE), `campo!` (!=), `campo>` (>), `campo<` (<), `campo>=` (>=), `campo<=` (<=).
-*   **Prefijos:** `||campo` (OR), `&&campo` (AND).
-
-```javascript
-// Ejemplo: WHERE puntos > 10 OR nombre LIKE 'Anti%'
-await usuarios.select({ "puntos>": 10, "||nombre%": "Anti%" });
-```
-
-> [!IMPORTANT]
-> **Uso de Parámetros Polimórficos:**
-> Si pasas un **objeto** como primer argumento en `.select()`, la librería lo interpretará como una definición de **Joins**. Para usar un objeto de filtrado `where` sin definir campos ni joins, utiliza `null`:
-> ```javascript
-> // Correcto: (campos, joins, where)
-> await tabla.select(null, null, { "activo": 1 });
-> ```
-
-### Sintaxis de Objeto Único (Recomendada)
-Para consultas más limpias sin preocuparte por el orden de los parámetros:
-
-```javascript
-await usuarios.select({
-    where: { "puntos>": 50, "||nombre%": "A%" },
+const resultados = await usuarios.select({
+    where: { 
+        "puntos>": 50,      // Sufijo > para mayor que
+        "||nombre%": "A%"   // Prefijo || para OR, sufijo % para LIKE
+    },
+    campos: ["id", "nombre", "puntos"],
+    joins: { "<perfiles": "usuarios.id = perfiles.id_usuario" },
     order: "id DESC",
-    limit: 5
+    limit: 10
 });
 ```
+
+#### Operadores Avanzados en `where`:
+* **Sufijos de comparaci?n**: `campo%` (LIKE), `campo!` (!=), `campo>` (>), `campo<` (<), `campo>=` (>=), `campo<=` (<=).
+* **Prefijos l?gicos**: `||campo` (OR), `&&campo` (AND por defecto).
+
+#### B?squedas por ID y B?squeda Inteligente:
+```javascript
+// B?squeda directa por clave primaria:
+const user = await usuarios.selectById(1);
+
+// B?squeda inteligente (LIKE en varias columnas):
+const encontrados = await usuarios.busqueda("Antigravity", ["nombre"]);
+```
+
+<details>
+<summary><b>Sintaxis Posicional Alternativa (Legacy)</b></summary>
+
+Tambi?n puedes usar la firma posicional cl?sica `select([campos], [joins], [where], ...)`:
+```javascript
+// Filtro directo string:
+const mayores = await usuarios.select("puntos > 10");
+
+// Selecci?n de columnas espec?ficas:
+const nombres = await usuarios.select(["nombre"], "puntos < 50");
+```
+
+> [!WARNING]
+> Si deseas filtrar usando un **objeto** en la sintaxis posicional sin definir campos ni joins, debes pasar `null` expl?citamente:
+> ```javascript
+> // Correcto posicional: (campos, joins, where)
+> await usuarios.select(null, null, { "activo": 1 });
+> ```
+> *(Por esta raz?n se recomienda usar siempre la Sintaxis de Objeto ?nico)*.
+</details>
 
 ### Actualización y Borrado
 ```javascript

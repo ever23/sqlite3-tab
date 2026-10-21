@@ -28,7 +28,7 @@ class sqlite3Tab extends connect {
         return this.connection.serialize(call)
     }
     parallelize(call) {
-        return this.connectionparallelize(call)
+        return this.connection.parallelize(call)
     }
     /**
     * construlle un objeto dbtabla asociado a el nombre

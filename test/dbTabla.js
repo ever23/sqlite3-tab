@@ -146,7 +146,7 @@ describe("Test de la clase sqlite3-tab :tabla",()=>
 
         })
     })
-    it('silumacion de AUTO_INCREMENT usando modelos',()=>
+    it('simulación de AUTO_INCREMENT usando modelos',()=>
     {
         return (new Promise(async(resolve,reject)=>
         {
