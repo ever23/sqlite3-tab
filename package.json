@@ -3,6 +3,7 @@
   "version": "2.1.2",
   "description": "interface de alto nivel para consultas sqlite3",
   "main": "sqlite3-tab.js",
+  "types": "sqlite3-tab.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ever23/sqlite3-tab.git"
