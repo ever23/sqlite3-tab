@@ -17,7 +17,11 @@ export class sqlite3Tab extends Connect {
     constructor(params: string | any);
     serialize(call: Function): any;
     parallelize(call: Function): any;
-    tabla<T = Record<string, any>>(tabla: string, callback?: (t: dbTabla<T>, error?: any) => void, verify?: boolean): dbTabla<T>;
+    tabla<T = Record<string, any>, TMethods = Record<string, any>>(
+        tabla: string,
+        callback?: (t: dbTabla<T> & TMethods, error?: any) => void,
+        verify?: boolean
+    ): dbTabla<T> & TMethods;
     query(query: string): Promise<any>;
     beginTransaction(): Promise<any>;
     commit(): Promise<any>;
