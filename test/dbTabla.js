@@ -54,9 +54,22 @@ describe("Test de la clase sqlite3-tab :tabla",()=>
         return test1.insert(12,"text",12,"text2").then(ok=>
         {
             assert.ok(ok instanceof sqlite3Ok,"debe retornar un objeto sqlite3Ok")
-            //assert.equal(ok.$sql,"INSERT INTO `test1` (`id`,`row1`,`row2`,`row3`) VALUES (12,'text',12,'text2');")
+            assert.ok(ok.insertId > 0)
+            assert.equal(ok.changes, 1)
         })
 
+    })
+    it('dbTabla:insert con autoincrement nativo retorna insertId correcto', async () => {
+        const sqlite = new connect(":memory:")
+        await sqlite.query("CREATE TABLE usuarios (id INTEGER PRIMARY KEY AUTOINCREMENT, nombre TEXT);")
+        const tabla = sqlite.tabla('usuarios')
+        const r1 = await tabla.insert({ nombre: "Usuario 1" })
+        assert.equal(r1.insertId, 1)
+        assert.equal(r1.changes, 1)
+
+        const r2 = await tabla.insert({ nombre: "Usuario 2" })
+        assert.equal(r2.insertId, 2)
+        assert.equal(r2.changes, 1)
     })
     it('dbTabla:select',()=>
     {

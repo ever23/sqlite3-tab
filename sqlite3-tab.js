@@ -78,11 +78,16 @@ class sqlite3Tab extends connect {
                     resolver(result)
                 })
             } else {
-                this.connection.run(query, ...params, (error, result) => {
+                this.connection.run(query, ...params, function (error) {
                     if (error) {
                         return reject(error)
                     }
-                    resolver(result)
+                    resolver({
+                        insertId: this.lastID,
+                        lastID: this.lastID,
+                        changes: this.changes,
+                        affectedRows: this.changes
+                    })
                 })
             }
 
