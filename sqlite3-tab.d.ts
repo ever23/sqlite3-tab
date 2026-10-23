@@ -9,7 +9,8 @@ import {
     JoinsObject,
     dbResult,
     dbRow,
-    DbRowRecord
+    DbRowRecord,
+    QueryEvent
 } from 'dbtabla';
 
 export class sqlite3Tab extends Connect {

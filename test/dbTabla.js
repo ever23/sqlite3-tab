@@ -473,4 +473,36 @@ describe("Test de la clase sqlite3-tab :tabla",()=>
         assert.equal(batch3.data[0].id, 11)
         assert.equal(batch3.data[1].id, 12)
     })
+    it("db.on('query') emite eventos con sql, timeMs y estado de transacción sobre SQLite", async () => {
+        const sqlite = new connect(":memory:")
+        const events = []
+        sqlite.on('query', (e) => events.push(e))
+
+        await sqlite.query("CREATE TABLE logs_test (id INTEGER PRIMARY KEY, msg TEXT);")
+        await sqlite.query("INSERT INTO logs_test (msg) VALUES ('hola mundo');")
+
+        assert.equal(events.length, 2)
+        assert.equal(events[0].sql, "CREATE TABLE logs_test (id INTEGER PRIMARY KEY, msg TEXT);")
+        assert.ok(typeof events[0].timeMs === "number" && events[0].timeMs >= 0)
+        assert.equal(events[0].isTransaction, false)
+        assert.equal(events[0].error, null)
+
+        await sqlite.transaction(async (tx) => {
+            await tx.query("INSERT INTO logs_test (msg) VALUES ('transaccional');")
+        })
+
+        const txEvent = events.find(e => e.sql.includes("transaccional"))
+        assert.ok(txEvent)
+        assert.equal(txEvent.isTransaction, true)
+    })
+    it("db.onSlowQuery alerta cuando la consulta supera el umbral", async () => {
+        const sqlite = new connect(":memory:")
+        const slowList = []
+        sqlite.onSlowQuery(0, (e) => slowList.push(e))
+
+        await sqlite.query("SELECT 1;")
+        assert.equal(slowList.length, 1)
+        assert.equal(slowList[0].sql, "SELECT 1;")
+        assert.ok(typeof slowList[0].timeMs === "number")
+    })
 })

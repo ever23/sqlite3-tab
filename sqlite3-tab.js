@@ -68,30 +68,30 @@ class sqlite3Tab extends connect {
     * @return {Promise}
     */
     query(query, ...params) {
-        return new Promise((resolver, reject) => {
-
-            if (/^[\s]*(select|pragma)/i.test(query)) {
-                this.connection.all(query, ...params, (error, result) => {
-                    if (error) {
-                        return reject(error)
-                    }
-                    resolver(result)
-                })
-            } else {
-                this.connection.run(query, ...params, function (error) {
-                    if (error) {
-                        return reject(error)
-                    }
-                    resolver({
-                        insertId: this.lastID,
-                        lastID: this.lastID,
-                        changes: this.changes,
-                        affectedRows: this.changes
-                    })
-                })
-            }
-
-        })
+        return this._executeWithTiming(query, () => {
+            return new Promise((resolver, reject) => {
+                if (/^[\s]*(select|pragma)/i.test(query)) {
+                    this.connection.all(query, ...params, (error, result) => {
+                        if (error) {
+                            return reject(error);
+                        }
+                        resolver(result);
+                    });
+                } else {
+                    this.connection.run(query, ...params, function (error) {
+                        if (error) {
+                            return reject(error);
+                        }
+                        resolver({
+                            insertId: this.lastID,
+                            lastID: this.lastID,
+                            changes: this.changes,
+                            affectedRows: this.changes
+                        });
+                    });
+                }
+            });
+        });
     }
     /**
     * envia una sentencia BEGIN TRANSACTION a la base de datos
@@ -141,14 +141,16 @@ class sqlite3Tab extends connect {
     * @return {Promise}
     */
     get(query, param = {}) {
-        return new Promise((resolver, reject) => {
-            this.connection.get(query, param, (error, result) => {
-                if (error) {
-                    return reject(error)
-                }
-                resolver(result)
-            })
-        })
+        return this._executeWithTiming(query, () => {
+            return new Promise((resolver, reject) => {
+                this.connection.get(query, param, (error, result) => {
+                    if (error) {
+                        return reject(error);
+                    }
+                    resolver(result);
+                });
+            });
+        });
     }
     /**
     * envia una consulta a la base de datos y obtiene una fila
