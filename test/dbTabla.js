@@ -1,3 +1,4 @@
+const model = require("tabla-model");
 const { describe, it } = require('node:test');
 const assert= require("assert")
 const dbtabla = require("dbtabla")
@@ -166,5 +167,55 @@ describe("Test de la clase sqlite3-tab :tabla",()=>
             assert.equal(ok[2].id_key2,3)
         })
 
+    })
+    it('auto-migración incremental de columnas al inicializar la tabla', async () => {
+        const sqlite = new connect(":memory:")
+        // Creamos la tabla física con solo 2 columnas
+        await sqlite.query("CREATE TABLE test_migracion (id INTEGER PRIMARY KEY, nombre TEXT);")
+        await sqlite.query("INSERT INTO test_migracion (id, nombre) VALUES (1, 'Juan');")
+
+        // Registramos un modelo que tiene 3 columnas (agrega 'telefono')
+        const modeloMigracion = new model("test_migracion", [
+            { name: "id", type: "integer", primary: true },
+            { name: "nombre", type: "text" },
+            { name: "telefono", type: "text" }
+        ])
+        sqlite.addModel(modeloMigracion)
+
+        // Al instanciar la tabla con verify=true o en la primera consulta, se debe auto-migrar
+        const tabla = await new Promise((resolve, reject) => {
+            sqlite.tabla('test_migracion', resolve, true)
+        })
+
+        // Verificamos que 'telefono' fue agregado a las columnas reconocidas
+        const colNames = tabla.columns.map(c => c.name)
+        assert.ok(colNames.includes('telefono'), "la columna 'telefono' debe estar en los metadatos")
+
+        // Insertamos un registro usando la nueva columna
+        await tabla.insert({ id: 2, nombre: "Pedro", telefono: "555-1234" })
+
+        // Seleccionamos y verificamos que SQLite guardó y retornó la nueva columna
+        const resultados = await tabla.select()
+        assert.equal(resultados.length, 2)
+        assert.equal(resultados[1].nombre, "Pedro")
+        assert.equal(resultados[1].telefono, "555-1234")
+    })
+    it('respeta la opción autoMigrate: false', async () => {
+        const sqlite = new connect({ autoMigrate: false })
+        await sqlite.query("CREATE TABLE test_no_migrar (id INTEGER PRIMARY KEY, nombre TEXT);")
+
+        const modelo = new model("test_no_migrar", [
+            { name: "id", type: "integer", primary: true },
+            { name: "nombre", type: "text" },
+            { name: "direccion", type: "text" }
+        ])
+        sqlite.addModel(modelo)
+
+        const tabla = await new Promise((resolve) => {
+            sqlite.tabla('test_no_migrar', resolve, true)
+        })
+
+        const colNames = tabla.columns.map(c => c.name)
+        assert.ok(!colNames.includes('direccion'), "no debe haber migrado 'direccion' con autoMigrate: false")
     })
 })

@@ -16,6 +16,9 @@ class sqlite3Tab extends connect {
         if (params instanceof sqlite3.Database) {
             super({}, SQLITE3_DB)
             this.connection = params
+        } else if (typeof params === 'object' && params !== null) {
+            super(params, SQLITE3_DB)
+            this.connection = new sqlite3.Database(params.filename || params.database || ':memory:')
         } else {
             super(params, SQLITE3_DB)
             this.connection = new sqlite3.Database(params)
@@ -169,17 +172,18 @@ class sqlite3Tab extends connect {
         return new Promise((res, rej) => {
             this.query(`${this._information_schema}'${table}'`)
                 .then(result => {
-                    this.inModel(table, result.length == 0)
-                        .then(res).catch(e => {
-                            if (e === undefined) {
-                                if (result.length == 0)
+                    if (result.length == 0) {
+                        this.inModel(table, true)
+                            .then(res).catch(e => {
+                                if (e === undefined) {
                                     rej("la tabla no existe")
-                                else
-                                    res((new model(result[0].sql, this._escapeChar)).getData())
-                            } else {
-                                rej(e)
-                            }
-                        })
+                                } else {
+                                    rej(e)
+                                }
+                            })
+                    } else {
+                        res((new model(result[0].sql, this._escapeChar)).getData())
+                    }
                 }).catch(rej)
         })
 
