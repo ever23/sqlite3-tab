@@ -383,4 +383,94 @@ describe("Test de la clase sqlite3-tab :tabla",()=>
         assert.equal(rows[1].id, 3)
         assert.equal(rows[1].detalle, "pedido de cierre")
     })
+    it("dbTabla.paginate() paginación clásica por página sobre SQLite real", async () => {
+        const sqlite = new connect(":memory:")
+        await sqlite.query("CREATE TABLE articulos (id INTEGER PRIMARY KEY AUTOINCREMENT, titulo TEXT, precio INT, categoria TEXT);")
+        const tabla = sqlite.tabla("articulos")
+
+        // Insertamos 25 artículos
+        const items = []
+        for (let i = 1; i <= 25; i++) {
+            items.push({
+                titulo: `Articulo ${i}`,
+                precio: i * 10,
+                categoria: i % 2 === 0 ? "tecnologia" : "hogar"
+            })
+        }
+        await tabla.insertAll(items)
+
+        // Página 1
+        const p1 = await tabla.paginate({ page: 1, limit: 10, order: "id ASC" })
+        assert.equal(p1.total, 25)
+        assert.equal(p1.page, 1)
+        assert.equal(p1.limit, 10)
+        assert.equal(p1.totalPages, 3)
+        assert.equal(p1.hasNext, true)
+        assert.equal(p1.hasPrev, false)
+        assert.equal(p1.data.length, 10)
+        assert.equal(p1.data[0].id, 1)
+        assert.equal(p1.data[9].id, 10)
+
+        // Página 2
+        const p2 = await tabla.paginate({ page: 2, limit: 10, order: "id ASC" })
+        assert.equal(p2.page, 2)
+        assert.equal(p2.hasNext, true)
+        assert.equal(p2.hasPrev, true)
+        assert.equal(p2.data.length, 10)
+        assert.equal(p2.data[0].id, 11)
+        assert.equal(p2.data[9].id, 20)
+
+        // Página 3 (última página)
+        const p3 = await tabla.paginate({ page: 3, limit: 10, order: "id ASC" })
+        assert.equal(p3.page, 3)
+        assert.equal(p3.hasNext, false)
+        assert.equal(p3.hasPrev, true)
+        assert.equal(p3.data.length, 5)
+        assert.equal(p3.data[0].id, 21)
+        assert.equal(p3.data[4].id, 25)
+
+        // Con filtro where
+        const pFiltrado = await tabla.paginate({
+            where: { categoria: "tecnologia", "precio>=": 100 },
+            page: 1,
+            limit: 5
+        })
+        assert.ok(pFiltrado.total > 0)
+        assert.ok(pFiltrado.data.every(row => row.categoria === "tecnologia" && row.precio >= 100))
+    })
+    it("dbTabla.paginate() paginación por cursor (Keyset) sobre SQLite real", async () => {
+        const sqlite = new connect(":memory:")
+        await sqlite.query("CREATE TABLE feeds (id INTEGER PRIMARY KEY, mensaje TEXT);")
+        const tabla = sqlite.tabla("feeds")
+
+        const items = []
+        for (let i = 1; i <= 12; i++) {
+            items.push({ id: i, mensaje: `Mensaje #${i}` })
+        }
+        await tabla.insertAll(items)
+
+        // Primera tanda (cursor inicial sin after)
+        const batch1 = await tabla.paginate({ limit: 5, order: "id ASC" })
+        assert.equal(batch1.data.length, 5)
+        assert.equal(batch1.hasMore, true)
+        assert.equal(batch1.nextCursor, 5)
+        assert.equal(batch1.data[0].id, 1)
+        assert.equal(batch1.data[4].id, 5)
+
+        // Segunda tanda (después de id 5)
+        const batch2 = await tabla.paginate({ after: batch1.nextCursor, limit: 5, order: "id ASC" })
+        assert.equal(batch2.data.length, 5)
+        assert.equal(batch2.hasMore, true)
+        assert.equal(batch2.nextCursor, 10)
+        assert.equal(batch2.data[0].id, 6)
+        assert.equal(batch2.data[4].id, 10)
+
+        // Tercera tanda (después de id 10, solo quedan 2)
+        const batch3 = await tabla.paginate({ after: batch2.nextCursor, limit: 5, order: "id ASC" })
+        assert.equal(batch3.data.length, 2)
+        assert.equal(batch3.hasMore, false)
+        assert.equal(batch3.nextCursor, null)
+        assert.equal(batch3.data[0].id, 11)
+        assert.equal(batch3.data[1].id, 12)
+    })
 })
