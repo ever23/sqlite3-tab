@@ -70,7 +70,7 @@ class sqlite3Tab extends connect {
     query(query, ...params) {
         return new Promise((resolver, reject) => {
 
-            if (/^[\s]*select/i.test(query)) {
+            if (/^[\s]*(select|pragma)/i.test(query)) {
                 this.connection.all(query, ...params, (error, result) => {
                     if (error) {
                         return reject(error)
@@ -169,24 +169,38 @@ class sqlite3Tab extends connect {
     * @param {string} table - nombre de la tabla
     */
     _keysInTable(table) {
-        return new Promise((res, rej) => {
-            this.query(`${this._information_schema}'${table}'`)
-                .then(result => {
-                    if (result.length == 0) {
-                        this.inModel(table, true)
-                            .then(res).catch(e => {
-                                if (e === undefined) {
-                                    rej("la tabla no existe")
-                                } else {
-                                    rej(e)
-                                }
-                            })
-                    } else {
-                        res((new model(result[0].sql, this._escapeChar)).getData())
-                    }
-                }).catch(rej)
-        })
-
+        return new Promise(async (res, rej) => {
+            try {
+                const rows = await this.query(`PRAGMA table_info('${table}')`);
+                if (!rows || rows.length === 0) {
+                    this.inModel(table, true)
+                        .then(res).catch(e => {
+                            if (e === undefined) {
+                                rej("la tabla no existe");
+                            } else {
+                                rej(e);
+                            }
+                        });
+                } else {
+                    const colums = rows.map(r => ({
+                        name: r.name,
+                        type: (r.type || 'text').toLowerCase(),
+                        defaultNull: r.notnull === 0,
+                        primary: r.pk > 0,
+                        unique: false,
+                        defaul: r.dflt_value !== null && r.dflt_value !== undefined ? String(r.dflt_value) : ""
+                    }));
+                    res({
+                        tabla: table,
+                        colums: colums,
+                        columns: colums,
+                        colum: colums
+                    });
+                }
+            } catch (err) {
+                rej(err);
+            }
+        });
     }
 
 }

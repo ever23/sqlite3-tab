@@ -218,4 +218,42 @@ describe("Test de la clase sqlite3-tab :tabla",()=>
         const colNames = tabla.columns.map(c => c.name)
         assert.ok(!colNames.includes('direccion'), "no debe haber migrado 'direccion' con autoMigrate: false")
     })
+    it('no intenta agregar columnas que ya existen en la base de datos (evita duplicate column name)', async () => {
+        const sqlite = new connect(":memory:")
+        // Creamos la tabla con sintaxis compleja (IF NOT EXISTS, comillas dobles, saltos de línea)
+        await sqlite.query(`CREATE TABLE IF NOT EXISTS "inscripciones" (
+            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+            "cedula" VARCHAR(20) NOT NULL,
+            "periodo" VARCHAR(10) NOT NULL
+        );`)
+        await sqlite.query("INSERT INTO inscripciones (cedula, periodo) VALUES ('12345678', '2026-1');")
+
+        // Registramos el modelo que tiene 'periodo' y además una columna verdaderamente nueva 'seccion'
+        const modeloInscripciones = new model("inscripciones", [
+            { name: "id", type: "integer", primary: true, autoincrement: true },
+            { name: "cedula", type: "varchar", len: 20 },
+            { name: "periodo", type: "varchar", len: 10 },
+            { name: "seccion", type: "varchar", len: 5 }
+        ])
+        sqlite.addModel(modeloInscripciones)
+
+        // Instanciamos la tabla: no debe arrojar 'duplicate column name: periodo'
+        const tabla = await new Promise((resolve, reject) => {
+            sqlite.tabla('inscripciones', (t, err) => {
+                if (err) return reject(err);
+                resolve(t);
+            }, true)
+        })
+
+        const colNames = tabla.columns.map(c => c.name.toLowerCase())
+        assert.ok(colNames.includes('periodo'), "debe incluir 'periodo'")
+        assert.ok(colNames.includes('seccion'), "debe haber agregado 'seccion'")
+
+        // Insertamos un nuevo registro con seccion y periodo
+        await tabla.insert({ cedula: "87654321", periodo: "2026-1", seccion: "A" })
+        const rows = await tabla.select()
+        assert.equal(rows.length, 2)
+        assert.equal(rows[0].periodo, "2026-1")
+        assert.equal(rows[1].seccion, "A")
+    })
 })
