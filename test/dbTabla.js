@@ -269,4 +269,22 @@ describe("Test de la clase sqlite3-tab :tabla",()=>
         assert.equal(rows[0].periodo, "2026-1")
         assert.equal(rows[1].seccion, "A")
     })
+    it('insertAll inserta multiples filas en una sola llamada y retorna affectedRows / changes', async () => {
+        const sqlite = new connect(":memory:")
+        await sqlite.query("CREATE TABLE usuarios_bulk (id INTEGER PRIMARY KEY AUTOINCREMENT, nombre TEXT, edad INT);")
+        const tabla = sqlite.tabla('usuarios_bulk')
+
+        const res = await tabla.insertAll([
+            { nombre: "Carlos", edad: 25 },
+            { nombre: "Ana", edad: 30 },
+            { nombre: "Luis", edad: 22 }
+        ])
+
+        assert.ok(res.changes === 3 || res.affectedRows === 3, "debe haber afectado 3 filas")
+        const rows = await tabla.select()
+        assert.equal(rows.length, 3)
+        assert.equal(rows[0].nombre, "Carlos")
+        assert.equal(rows[1].nombre, "Ana")
+        assert.equal(rows[2].nombre, "Luis")
+    })
 })
