@@ -287,4 +287,100 @@ describe("Test de la clase sqlite3-tab :tabla",()=>
         assert.equal(rows[1].nombre, "Ana")
         assert.equal(rows[2].nombre, "Luis")
     })
+    it("db.transaction confirma operaciones al finalizar el bloque con éxito", async () => {
+        const sqlite = new connect(":memory:")
+        await sqlite.query("CREATE TABLE cuentas (id INTEGER PRIMARY KEY, titular TEXT, saldo INT);")
+
+        const res = await sqlite.transaction(async (tx) => {
+            const cuentas = tx.tabla("cuentas")
+            await cuentas.insert({ id: 1, titular: "Persona A", saldo: 500 })
+            await cuentas.insert({ id: 2, titular: "Persona B", saldo: 200 })
+            return "transferencia_completada"
+        })
+
+        assert.equal(res, "transferencia_completada")
+        const cuentasDb = sqlite.tabla("cuentas")
+        const rows = await cuentasDb.select()
+        assert.equal(rows.length, 2)
+        assert.equal(rows[0].titular, "Persona A")
+        assert.equal(rows[1].titular, "Persona B")
+    })
+    it("db.transaction revierte todas las operaciones si ocurre una excepción", async () => {
+        const sqlite = new connect(":memory:")
+        await sqlite.query("CREATE TABLE cuentas_fail (id INTEGER PRIMARY KEY, titular TEXT, saldo INT);")
+        const cuentasDb = sqlite.tabla("cuentas_fail")
+        await cuentasDb.insert({ id: 1, titular: "Saldo Inicial", saldo: 1000 })
+
+        let errorLanzado = null
+        try {
+            await sqlite.transaction(async (tx) => {
+                const cuentas = tx.tabla("cuentas_fail")
+                await cuentas.insert({ id: 2, titular: "Operacion 1", saldo: 50 })
+                await cuentas.insert({ id: 3, titular: "Operacion 2", saldo: 80 })
+                throw new Error("Fallo de negocio inesperado")
+            })
+        } catch (err) {
+            errorLanzado = err
+        }
+
+        assert.ok(errorLanzado)
+        assert.equal(errorLanzado.message, "Fallo de negocio inesperado")
+
+        const rows = await cuentasDb.select()
+        assert.equal(rows.length, 1)
+        assert.equal(rows[0].id, 1)
+        assert.equal(rows[0].titular, "Saldo Inicial")
+    })
+    it("db.transaction soporta transacciones anidadas con SAVEPOINT (éxito anidado)", async () => {
+        const sqlite = new connect(":memory:")
+        await sqlite.query("CREATE TABLE auditoria (id INTEGER PRIMARY KEY, evento TEXT);")
+
+        await sqlite.transaction(async (tx) => {
+            const audit = tx.tabla("auditoria")
+            await audit.insert({ id: 1, evento: "inicio_proceso" })
+
+            await tx.transaction(async (nestedTx) => {
+                const nestedAudit = nestedTx.tabla("auditoria")
+                await nestedAudit.insert({ id: 2, evento: "subproceso_ok" })
+            })
+
+            await audit.insert({ id: 3, evento: "fin_proceso" })
+        })
+
+        const auditDb = sqlite.tabla("auditoria")
+        const rows = await auditDb.select()
+        assert.equal(rows.length, 3)
+        assert.equal(rows[0].evento, "inicio_proceso")
+        assert.equal(rows[1].evento, "subproceso_ok")
+        assert.equal(rows[2].evento, "fin_proceso")
+    })
+    it("db.transaction revierte únicamente el SAVEPOINT al fallar transacción anidada", async () => {
+        const sqlite = new connect(":memory:")
+        await sqlite.query("CREATE TABLE pedidos (id INTEGER PRIMARY KEY, detalle TEXT);")
+
+        await sqlite.transaction(async (tx) => {
+            const pedidos = tx.tabla("pedidos")
+            await pedidos.insert({ id: 1, detalle: "pedido principal" })
+
+            try {
+                await tx.transaction(async (nestedTx) => {
+                    const nestedPedidos = nestedTx.tabla("pedidos")
+                    await nestedPedidos.insert({ id: 2, detalle: "pedido secundario que fallara" })
+                    throw new Error("Error en sub-pedido")
+                })
+            } catch (e) {
+                // Ignorado
+            }
+
+            await pedidos.insert({ id: 3, detalle: "pedido de cierre" })
+        })
+
+        const pedidosDb = sqlite.tabla("pedidos")
+        const rows = await pedidosDb.select()
+        assert.equal(rows.length, 2)
+        assert.equal(rows[0].id, 1)
+        assert.equal(rows[0].detalle, "pedido principal")
+        assert.equal(rows[1].id, 3)
+        assert.equal(rows[1].detalle, "pedido de cierre")
+    })
 })

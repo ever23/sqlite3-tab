@@ -119,6 +119,22 @@ class sqlite3Tab extends connect {
     async rollback() {
         return this.query("ROLLBACK");
     }
+
+    async _acquireDedicatedConnection() {
+        return this.connection;
+    }
+
+    async _releaseDedicatedConnection(conn) {
+        // En SQLite se utiliza la misma conexión serializada
+    }
+
+    _queryOnConnection(conn, query, ...params) {
+        return this.query(query, ...params);
+    }
+
+    _getOnConnection(conn, query, param = {}) {
+        return this.get(query, param);
+    }
     /**
     * envia una consulta a la base de datos y obtiene una fila
     * @param {string} query - consulta sql

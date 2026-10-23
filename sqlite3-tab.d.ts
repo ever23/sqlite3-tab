@@ -23,6 +23,7 @@ export class sqlite3Tab extends Connect {
         verify?: boolean
     ): dbTabla<T> & TMethods;
     query(query: string): Promise<any>;
+    transaction<TResult = any>(callback: (tx: this) => Promise<TResult>): Promise<TResult>;
     beginTransaction(): Promise<any>;
     commit(): Promise<any>;
     rollback(): Promise<any>;
