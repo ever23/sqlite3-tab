@@ -562,4 +562,27 @@ describe("Test de la clase sqlite3-tab :tabla",()=>
         assert.equal(pViaObj.total, 3)
         assert.equal(pViaObj.data.length, 3)
     })
+    it("dbTabla.busqueda() ordena por relevancia jerárquica y soporta columnas cruzadas en SQLite", async () => {
+        const sqlite = new connect(":memory:")
+        await sqlite.query("CREATE TABLE personas_bus (id INTEGER PRIMARY KEY AUTOINCREMENT, nombres TEXT, apellidos TEXT);")
+        const tabla = sqlite.tabla("personas_bus")
+
+        await tabla.insertAll([
+            { nombres: "Pedro Juan", apellidos: "Gomez" },      // 1 palabra en medio (+1)
+            { nombres: "Juan", apellidos: "Perez" },            // columnas cruzadas "Juan Perez" (+4 +4 +5 = 13)
+            { nombres: "Juan Perez", apellidos: "Rodriguez" },  // frase exacta en 1 columna (+10 +4 +4 +5 = 23)
+            { nombres: "Maria", apellidos: "Lopez" }            // sin coincidencia (0 -> filtrado)
+        ])
+
+        const res = await tabla.busqueda("  Juan   Perez  ", ["nombres", "apellidos"])
+        assert.equal(res.length, 3)
+        assert.equal(res[0].nombres, "Juan Perez")
+        assert.equal(res[1].nombres, "Juan")
+        assert.equal(res[1].apellidos, "Perez")
+        assert.equal(res[2].nombres, "Pedro Juan")
+
+        // Verifica que ignore stopwords como "de" y no haga match con todo
+        const resStop = await tabla.busqueda("Juan de Perez", ["nombres", "apellidos"])
+        assert.equal(resStop.length, 3)
+    })
 })
