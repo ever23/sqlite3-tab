@@ -29,22 +29,17 @@ describe("Test de la clase sqlite3-tab :tabla",()=>
         sqlite.end()
 
     })
-    it('obtencion del objeto dbtabla async',()=>
+    it('obtencion del objeto dbtabla async', async () =>
     {
-
-
-        return (new Promise( (resolve,rejec)=>
-        {
-            const sqlite= new connect(":memory:")
-            sqlite.query("create table `test1`(`id` int not null,`row1` text default 'ever',`row2` int not null,`row3` text null,primary key (`id`))")
-            sqlite.tabla('test1',(test1)=>
-            {
-                resolve(test1)
-            },true)
-        })).then(test1=>
-        {
-            assert.ok((test1 instanceof dbtabla),"debe retornar un objeto dbtabla")
-        })
+        const sqlite = new connect(":memory:")
+        await sqlite.query("create table `test1`(`id` int not null,`row1` text default 'ever',`row2` int not null,`row3` text null,primary key (`id`))")
+        const test1 = await new Promise((resolve, reject) => {
+            sqlite.tabla('test1', (tabla, err) => {
+                if (err) return reject(err);
+                resolve(tabla);
+            }, true);
+        });
+        assert.ok((test1 instanceof dbtabla), "debe retornar un objeto dbtabla");
     })
     it('dbTabla:insert',()=>
     {
