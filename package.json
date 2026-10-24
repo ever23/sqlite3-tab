@@ -1,6 +1,6 @@
 {
   "name": "sqlite3-tab",
-  "version": "2.2.0-beta.0",
+  "version": "2.2.0-beta.1",
   "description": "interface de alto nivel para consultas sqlite3",
   "main": "sqlite3-tab.js",
   "types": "sqlite3-tab.d.ts",
@@ -24,7 +24,7 @@
     "globals": "^17.4.0"
   },
   "dependencies": {
-    "dbtabla": "^2.3.0-beta.0",
+    "dbtabla": "^2.3.0-beta.1",
     "sqlite3": "^6.0.1"
   },
   "engines": {

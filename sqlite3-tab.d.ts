@@ -10,7 +10,9 @@ import {
     dbResult,
     dbRow,
     DbRowRecord,
-    QueryEvent
+    QueryEvent,
+    PaginateOptions,
+    PaginateResult
 } from 'dbtabla';
 
 export class sqlite3Tab extends Connect {

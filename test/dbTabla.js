@@ -521,4 +521,50 @@ describe("Test de la clase sqlite3-tab :tabla",()=>
         const noEncontrado = await tabla.selectOne({ where: { nombre: "Inexistente" } })
         assert.strictEqual(noEncontrado, null)
     })
+    it("dbTabla.paginate() con group sobre SQLite real no genera error 'no such column: 1'", async () => {
+        const sqlite = new connect(":memory:")
+        await sqlite.query("CREATE TABLE articulos_grp (id INTEGER PRIMARY KEY, categoria TEXT);")
+        const tabla = sqlite.tabla("articulos_grp")
+
+        await tabla.insertAll([
+            { categoria: "computo" },
+            { categoria: "computo" },
+            { categoria: "hogar" }
+        ])
+
+        const res = await tabla.paginate({ group: "categoria", page: 1, limit: 10 })
+        assert.equal(res.total, 2)
+        assert.equal(res.totalPages, 1)
+        assert.equal(res.data.length, 2)
+    })
+    it("dbTabla.busquedaPaginate() realiza búsqueda inteligente ponderada paginada sobre SQLite real", async () => {
+        const sqlite = new connect(":memory:")
+        await sqlite.query("CREATE TABLE articulos_bus (id INTEGER PRIMARY KEY AUTOINCREMENT, titulo TEXT);")
+        const tabla = sqlite.tabla("articulos_bus")
+
+        await tabla.insertAll([
+            { titulo: "Laptop Lenovo ThinkPad" },
+            { titulo: "Laptop Dell XPS" },
+            { titulo: "Laptop Lenovo IdeaPad" },
+            { titulo: "Mouse Inalámbrico" }
+        ])
+
+        // Página 1 (limit 2)
+        const p1 = await tabla.busquedaPaginate("Laptop Lenovo", ["titulo"], { page: 1, limit: 2 })
+        assert.equal(p1.total, 3)
+        assert.equal(p1.totalPages, 2)
+        assert.equal(p1.data.length, 2)
+        assert.ok(p1.data[0].puntaje_busqueda >= p1.data[1].puntaje_busqueda)
+
+        // Página 2 (limit 2)
+        const p2 = await tabla.busquedaPaginate("Laptop Lenovo", ["titulo"], { page: 2, limit: 2 })
+        assert.equal(p2.total, 3)
+        assert.equal(p2.data.length, 1)
+        assert.equal(p2.data[0].titulo, "Laptop Dell XPS")
+
+        // También funciona vía paginate({ cadena })
+        const pViaPaginate = await tabla.paginate({ cadena: "Laptop Lenovo", campo_bus: ["titulo"], page: 1, limit: 10 })
+        assert.equal(pViaPaginate.total, 3)
+        assert.equal(pViaPaginate.data.length, 3)
+    })
 })
