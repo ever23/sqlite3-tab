@@ -557,9 +557,9 @@ describe("Test de la clase sqlite3-tab :tabla",()=>
         assert.equal(p2.data.length, 1)
         assert.equal(p2.data[0].titulo, "Laptop Dell XPS")
 
-        // También funciona vía paginate({ cadena })
-        const pViaPaginate = await tabla.paginate({ cadena: "Laptop Lenovo", campo_bus: ["titulo"], page: 1, limit: 10 })
-        assert.equal(pViaPaginate.total, 3)
-        assert.equal(pViaPaginate.data.length, 3)
+        // También funciona con sintaxis de objeto en busquedaPaginada
+        const pViaObj = await tabla.busquedaPaginada({ cadena: "Laptop Lenovo", campo_bus: ["titulo"], page: 1, limit: 10 })
+        assert.equal(pViaObj.total, 3)
+        assert.equal(pViaObj.data.length, 3)
     })
 })
