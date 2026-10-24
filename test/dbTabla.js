@@ -505,4 +505,20 @@ describe("Test de la clase sqlite3-tab :tabla",()=>
         assert.equal(slowList[0].sql, "SELECT 1;")
         assert.ok(typeof slowList[0].timeMs === "number")
     })
+    it("selectOne retorna el registro encontrado o null si no existe (no undefined)", async () => {
+        const sqlite = new connect(":memory:")
+        await sqlite.query("CREATE TABLE usuarios_test (id INTEGER PRIMARY KEY, nombre TEXT);")
+        const tabla = sqlite.tabla("usuarios_test")
+
+        await tabla.insert({ nombre: "Carlos" })
+
+        // 1. Registro existente
+        const encontrado = await tabla.selectOne({ where: { nombre: "Carlos" } })
+        assert.ok(encontrado !== null && encontrado !== undefined)
+        assert.equal(encontrado.nombre, "Carlos")
+
+        // 2. Registro inexistente -> DEBE SER null (especificación de tipado)
+        const noEncontrado = await tabla.selectOne({ where: { nombre: "Inexistente" } })
+        assert.strictEqual(noEncontrado, null)
+    })
 })
