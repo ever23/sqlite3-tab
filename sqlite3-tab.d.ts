@@ -15,9 +15,19 @@ import {
     PaginateResult
 } from 'dbtabla';
 
+export interface Sqlite3TabConfig {
+    filename?: string;
+    database?: string;
+    driver?: 'node:sqlite' | 'sqlite3';
+    options?: Record<string, any>;
+    autoMigrate?: boolean;
+    [key: string]: any;
+}
+
 export class sqlite3Tab extends Connect {
     connection: any;
-    constructor(params: string | any);
+    readonly engine: 'node:sqlite' | 'sqlite3';
+    constructor(params?: string | Sqlite3TabConfig | any);
     serialize(call: Function): any;
     parallelize(call: Function): any;
     tabla<T = Record<string, any>, TMethods = Record<string, any>>(
