@@ -66,6 +66,26 @@ describe("Test de la clase sqlite3-tab :tabla",()=>
         assert.equal(r2.insertId, 2)
         assert.equal(r2.changes, 1)
     })
+    it('dbTabla:insert con clave primaria not null e id omitido o undefined (caso Termux/ia_tareas)', async () => {
+        const sqlite = new connect(":memory:")
+        await sqlite.query("CREATE TABLE ia_tareas (id_tarea INTEGER PRIMARY KEY NOT NULL, id_usuario INT, contexto TEXT);")
+        const tabla = sqlite.tabla('ia_tareas')
+
+        // Caso 1: id_tarea omitido
+        const r1 = await tabla.insert({ id_usuario: 1, contexto: "test tarea 1" })
+        assert.equal(r1.insertId, 1)
+        assert.equal(r1.changes, 1)
+
+        // Caso 2: id_tarea pasado explícitamente como undefined
+        const r2 = await tabla.insert({ id_tarea: undefined, id_usuario: 2, contexto: "test tarea 2" })
+        assert.equal(r2.insertId, 2)
+        assert.equal(r2.changes, 1)
+
+        const rows = await tabla.select()
+        assert.equal(rows.length, 2)
+        assert.equal(rows[0].id_tarea, 1)
+        assert.equal(rows[1].id_tarea, 2)
+    })
     it('dbTabla:select',()=>
     {
         return createAndInsert((resolve,reject,sqlite)=>

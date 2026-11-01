@@ -17,18 +17,26 @@ function getSqlite3Driver() {
     return Sqlite3Driver || null
 }
 
+function sanitizeSqliteValue(val) {
+    return val === undefined ? null : val
+}
+
 function normalizeQueryArgs(params) {
     if (!params || params.length === 0) return []
     if (params.length === 1) {
         const first = params[0]
         if (first === undefined || first === null) return []
-        if (Array.isArray(first)) return first
+        if (Array.isArray(first)) return first.map(sanitizeSqliteValue)
         if (typeof first === "object") {
-            return Object.keys(first).length === 0 ? [] : [first]
+            const sanitized = {}
+            for (const key of Object.keys(first)) {
+                sanitized[key] = sanitizeSqliteValue(first[key])
+            }
+            return Object.keys(sanitized).length === 0 ? [] : [sanitized]
         }
-        return [first]
+        return [sanitizeSqliteValue(first)]
     }
-    return params
+    return params.map(sanitizeSqliteValue)
 }
 
 function wrapDatabaseSync(db) {
@@ -465,6 +473,7 @@ class sqlite3Tab extends connect {
             type: (r.type || "text").toLowerCase(),
             defaultNull: r.notnull === 0,
             primary: r.pk > 0,
+            autoincrement: r.pk > 0 && /int/i.test(r.type || ""),
             unique: false,
             defaul: r.dflt_value !== null && r.dflt_value !== undefined ? String(r.dflt_value) : ""
         }))
